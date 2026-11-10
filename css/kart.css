@@ -50,3 +50,4 @@
 .kt-res li{padding:3px 10px;border-radius:12px}.kt-res li.me{background:#fff3c4}
 .kt-err{color:#fff;text-align:center;margin-top:40vh;font-weight:900}
 .kt-end[hidden],.kt-game[hidden],.kt-menu[hidden]{display:none}
+.kt-gfx{border:none;background:#fff;border-radius:999px;padding:8px 16px;font-weight:900;font-family:inherit;box-shadow:var(--shadow)}
