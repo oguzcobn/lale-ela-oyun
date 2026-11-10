@@ -1,561 +1,75 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Lale &amp; Ela">
-<meta name="theme-color" content="#ffd8ec">
-<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
-<link rel="icon" href="img/icon-192.png">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="css/adventure.css">
-<link rel="stylesheet" href="css/kart.css">
-<script type="importmap">{"imports":{"three":"./js/vendor/three.module.min.js"}}</script>
-<title>Lale & Ela Oyun Bahçesi</title>
-<style>
-:root{
-  --pink:#ff6fa8;--purple:#9b6bff;--blue:#4fb3ff;--green:#3fcf86;--yellow:#ffc93c;--orange:#ff9547;--red:#ff5d5d;
-  --ink:#3b2a5a;--card:#ffffff;--shadow:0 5px 0 rgba(59,42,90,.16);
-}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
-html,body{margin:0;height:100%;overflow:hidden;color:var(--ink);
-  font-family:"Nunito","Baloo 2","Comic Neue",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  background:linear-gradient(160deg,#ffe2f0 0%,#ebe2ff 48%,#d8f2ff 100%)}
-button{font-family:inherit;color:inherit;cursor:pointer}
-.screen{position:absolute;inset:0;display:none;flex-direction:column;
-  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
-.screen.active{display:flex}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;flex:0 0 auto}
-.topbar h2{margin:0;font-size:clamp(20px,5vw,30px);font-weight:900;text-align:center;flex:1}
-.icon-btn{width:58px;height:58px;border-radius:20px;border:none;background:#fff;font-size:28px;box-shadow:var(--shadow);flex:0 0 auto;display:flex;align-items:center;justify-content:center}
-.icon-btn:active,.big:active,.opt:active,.lvl:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(59,42,90,.16)}
-.pill{background:#fff;border-radius:999px;padding:10px 18px;font-weight:900;font-size:22px;box-shadow:var(--shadow);min-width:58px;text-align:center;white-space:nowrap}
-
-/* HOME */
-#scr-home{align-items:center;justify-content:safe center;overflow-y:auto}
-.home-top{position:absolute;top:calc(12px + env(safe-area-inset-top));right:14px}
-.title{text-align:center;margin:8px 0 18px}
-.title h1{margin:0;font-size:clamp(34px,9vw,60px);font-weight:900;letter-spacing:.5px;
-  background:linear-gradient(90deg,#ff5fa2,#a46bff,#40a9ff,#36c97f,#ffb92e);-webkit-background-clip:text;background-clip:text;color:transparent;
-  filter:drop-shadow(0 3px 0 rgba(255,255,255,.9))}
-.title p{margin:6px 0 0;font-size:clamp(16px,4vw,22px);font-weight:800;opacity:.75}
-.menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;width:min(92vw,640px);padding-bottom:20px}
-.big{border:none;border-radius:28px;padding:18px 10px 16px;background:#fff;box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;overflow:hidden}
-.big .emo{font-size:clamp(48px,13vw,78px);line-height:1;animation:bob 2.6s ease-in-out infinite}
-.big:nth-child(2) .emo{animation-delay:.4s}.big:nth-child(3) .emo{animation-delay:.8s}.big:nth-child(4) .emo{animation-delay:1.2s}
-.big .lbl{font-size:clamp(17px,4.4vw,24px);font-weight:900}
-.big .age{font-size:14px;font-weight:900;color:#fff;border-radius:999px;padding:3px 10px}
-.big::before{content:"";position:absolute;inset:0 0 auto 0;height:8px;background:var(--c)}
-.big .age{background:var(--c)}
-@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-8px) rotate(3deg)}}
-
-
-.kh-row{display:flex;align-items:center;justify-content:center;gap:6px}
-/* SPLASH */
-#splash{position:fixed;inset:0;z-index:90;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;
-  background:radial-gradient(circle at 50% 35%,#fff4fa 0%,#ffd8ec 40%,#dccbff 75%,#c2e7ff 100%);overflow:hidden;transition:opacity .6s,transform .6s}
-#splash.hide{opacity:0;transform:scale(1.08);pointer-events:none}
-.sp-photo{width:min(86vw,540px,calc(52vh*1.25));aspect-ratio:1402/1122;border-radius:34px;overflow:hidden;border:8px solid #fff;position:relative;
-  box-shadow:0 18px 40px rgba(155,107,255,.35);animation:spIn 1.1s cubic-bezier(.3,1.6,.5,1) both,spFloat 4s ease-in-out 1.1s infinite}
-.sp-photo img{width:100%;height:100%;object-fit:cover;display:block;animation:kenburns 7s ease-out both}
-.sp-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.65) 50%,transparent 70%);transform:translateX(-130%);animation:shine 1.3s 1s ease both}
-@keyframes spIn{0%{transform:scale(.2) rotate(-14deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
-@keyframes spFloat{0%,100%{transform:translateY(0) rotate(-1.2deg)}50%{transform:translateY(-10px) rotate(1.2deg)}}
-@keyframes kenburns{from{transform:scale(1.18)}to{transform:scale(1)}}
-@keyframes shine{to{transform:translateX(130%)}}
-.sp-names{display:flex;align-items:center;font-size:clamp(46px,13vw,88px);font-weight:900;line-height:1;margin-top:6px}
-.sp-names span{display:inline-block;color:var(--c);animation:letter .7s cubic-bezier(.3,1.8,.5,1) both;
-  text-shadow:0 4px 0 #fff,0 -2px 0 #fff,3px 0 0 #fff,-3px 0 0 #fff,0 10px 16px rgba(59,42,90,.18)}
-.sp-names .amp{font-size:.6em;margin:0 .25em;color:var(--orange)}
-@keyframes letter{0%{transform:translateY(-140px) scale(.3) rotate(-20deg);opacity:0}100%{transform:none;opacity:1}}
-.sp-sub{font-size:clamp(18px,4.6vw,26px);font-weight:900;opacity:0;animation:fadeUp .6s 2.3s forwards}
-.sp-tap{margin-top:4px;background:#fff;border-radius:999px;padding:12px 26px;font-weight:900;font-size:20px;box-shadow:var(--shadow);opacity:0;animation:fadeUp .5s 2.9s forwards,pulse 1.4s 3.4s ease-in-out infinite}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
-.floaty{position:absolute;z-index:0;bottom:-70px;animation:floatUp linear infinite;pointer-events:none}
-@keyframes floatUp{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(-120vh) rotate(360deg)}}
-
-#splash>.sp-photo,#splash>.sp-names,#splash>.sp-sub,#splash>.sp-tap{position:relative;z-index:1}
-/* CHOOSER */
-.kids{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;width:min(94vw,700px,calc(78vh*1.4));padding-bottom:20px}
-.kid{border:none;border-radius:32px;background:#fff;padding:10px 10px 14px;box-shadow:0 7px 0 rgba(59,42,90,.16);display:flex;flex-direction:column;align-items:center;gap:6px;animation:kidIn .8s cubic-bezier(.3,1.5,.5,1) both}
-.kid:nth-child(2){animation-delay:.15s}
-.kid:active{transform:translateY(5px) scale(.98);box-shadow:0 2px 0 rgba(59,42,90,.16)}
-.kimg{width:100%;aspect-ratio:3/3.6;border-radius:24px;overflow:hidden;box-shadow:0 0 0 5px var(--c)}
-.kimg img{width:100%;height:100%;object-fit:cover;object-position:50% 18%;display:block;animation:breathe 5s ease-in-out infinite}
-.kid b{font-size:clamp(30px,9vw,48px);font-weight:900;color:var(--c);letter-spacing:2px;line-height:1.1}
-.kid .age{background:var(--c);color:#fff;font-weight:900;border-radius:999px;padding:4px 14px;font-size:16px}
-@keyframes kidIn{from{transform:translateY(60px) scale(.8);opacity:0}to{transform:none;opacity:1}}
-@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
-
-/* KID PAGE */
-.kidpage{overflow-y:auto;align-items:center}
-.kidhead{display:flex;flex-direction:column;align-items:center;gap:6px;margin:0 0 16px;text-align:center}
-.avatar{width:clamp(120px,36vw,190px);aspect-ratio:1;border-radius:50%;overflow:hidden;border:6px solid #fff;box-shadow:0 0 0 6px var(--c),0 12px 24px rgba(59,42,90,.2);animation:spIn .9s cubic-bezier(.3,1.6,.5,1) both,spFloat 3.6s ease-in-out .9s infinite}
-.avatar img{width:100%;height:100%;object-fit:cover;object-position:50% 22%;display:block}
-.hello{font-size:clamp(28px,8vw,44px);font-weight:900;color:var(--c);text-shadow:0 3px 0 #fff;animation:fadeUp .5s .35s both}
-.hello small{display:block;font-size:.5em;color:var(--ink);opacity:.7;text-shadow:none}
-.kidpage .menu{width:min(92vw,640px)}
-.kidpage .big{animation:kidIn .6s cubic-bezier(.3,1.5,.5,1) both}
-.kidpage .big:nth-child(2){animation-delay:.08s}.kidpage .big:nth-child(3){animation-delay:.16s}.kidpage .big:nth-child(4){animation-delay:.24s}
-.big small{font-size:14px;font-weight:800;opacity:.6;margin-top:-4px}
-@media (orientation:landscape) and (max-height:520px){
-  .title{margin:6px 0 8px}.title h1{font-size:34px}
-  .kimg{aspect-ratio:4/3.2}.kid b{font-size:30px}
-  .kids{width:min(86vw,calc((100vh - 160px)*2.2))}
-  .kidhead{flex-direction:row;gap:16px;margin-bottom:10px}.avatar{width:110px}
-  .kidpage .menu{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-  .big .emo{font-size:44px}
-}
-
-/* BALLOON */
-#balloonArea{position:relative;flex:1;overflow:hidden;touch-action:none}
-.balloon{position:absolute;left:0;top:0;border-radius:50% 50% 47% 47%/56% 56% 44% 44%;
-  background:radial-gradient(circle at 30% 27%,rgba(255,255,255,.8) 0 7%,rgba(255,255,255,0) 8%),radial-gradient(circle at 60% 70%,rgba(0,0,0,.10),rgba(0,0,0,0) 60%),var(--c);
-  display:flex;align-items:center;justify-content:center;will-change:transform;touch-action:none}
-.balloon span{font-size:40%;pointer-events:none}
-.balloon::after{content:"";position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:10px solid var(--c)}
-.balloon::before{content:"";position:absolute;top:calc(100% + 2px);left:50%;width:2px;height:55%;background:rgba(59,42,90,.3)}
-.balloon i{position:absolute;inset:-14px;pointer-events:auto}
-.cloud{position:absolute;font-size:70px;opacity:.75;pointer-events:none;animation:drift linear infinite}
-@keyframes drift{from{transform:translateX(-120px)}to{transform:translateX(110vw)}}
-.hint{position:absolute;left:0;right:0;bottom:24px;text-align:center;font-weight:900;font-size:22px;opacity:.55;pointer-events:none}
-
-/* LEVEL SELECT */
-.levels{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:10px 18px 30px;overflow-y:auto}
-.lvl{width:min(90vw,460px);border:none;border-radius:26px;background:#fff;box-shadow:var(--shadow);padding:16px 20px;display:flex;align-items:center;gap:16px;text-align:left}
-.lvl .e{font-size:46px;flex:0 0 auto}
-.lvl b{display:block;font-size:24px;font-weight:900}
-.lvl small{display:block;font-size:16px;font-weight:800;opacity:.65;margin-top:2px}
-.lvl .tag{margin-left:auto;background:var(--c);color:#fff;font-weight:900;border-radius:999px;padding:6px 12px;font-size:15px;white-space:nowrap}
-
-/* MEMORY */
-#memGrid{flex:1;min-height:0;overflow:hidden;display:grid;gap:10px;align-content:center;justify-content:center;padding:6px 12px 18px}
-.card{perspective:800px;cursor:pointer}
-.card .in{position:relative;width:100%;height:100%;transition:transform .45s cubic-bezier(.4,1.6,.5,1);transform-style:preserve-3d}
-.card.up .in,.card.done .in{transform:rotateY(180deg)}
-.face{position:absolute;inset:0;border-radius:18px;display:flex;align-items:center;justify-content:center;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:var(--shadow)}
-.face.front{background:repeating-linear-gradient(45deg,#a77bff 0 12px,#9466ff 12px 24px);color:#fff;font-size:40%}
-.face.front::after{content:"?";font-weight:900;font-size:min(9vw,46px);opacity:.9}
-.face.back{background:#fff;transform:rotateY(180deg)}
-.face.back span{font-size:var(--fs,40px);line-height:1}
-.card.done .face.back{background:#eafff3;box-shadow:0 0 0 4px var(--green),var(--shadow)}
-.card.done .in{animation:pop .5s ease}
-@keyframes pop{0%{transform:rotateY(180deg) scale(1)}50%{transform:rotateY(180deg) scale(1.12)}100%{transform:rotateY(180deg) scale(1)}}
-
-/* MATH */
-#mathBody{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:0 16px 22px}
-.dots{display:flex;gap:5px;flex-wrap:nowrap;justify-content:center;flex:1;min-width:0}
-.dots i{width:11px;height:11px;flex:0 0 auto;border-radius:50%;background:rgba(59,42,90,.15)}
-.dots i.ok{background:var(--green)}.dots i.now{background:var(--yellow);transform:scale(1.3)}
-.qbox{background:#fff;border-radius:30px;box-shadow:var(--shadow);padding:20px;width:min(92vw,560px);min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
-.qtext{font-size:clamp(46px,14vw,84px);font-weight:900;letter-spacing:2px}
-.qsub{font-size:22px;font-weight:900;opacity:.7}
-.objs{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:440px}
-.objs span{font-size:clamp(38px,10vw,56px);animation:inpop .35s backwards}
-@keyframes inpop{from{transform:scale(0)}to{transform:scale(1)}}
-.opts{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:12px;width:min(92vw,560px)}
-.opt{border:none;border-radius:24px;padding:16px 0;font-size:clamp(34px,10vw,52px);font-weight:900;color:#fff;box-shadow:var(--shadow);background:var(--c)}
-.opt.bad{animation:shake .4s;background:#c9c1d8 !important}
-.opt.good{background:var(--green) !important;transform:scale(1.08)}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
-
-/* DRAW */
-#drawWrap{flex:1;position:relative;margin:0 12px;border-radius:24px;overflow:hidden;box-shadow:var(--shadow);background:#fff;touch-action:none}
-#drawCanvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
-.tools{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;padding:10px 10px 14px;align-items:center;flex:0 0 auto;scrollbar-width:none}
-.tools::-webkit-scrollbar{display:none}
-.sw{width:42px;height:42px;border-radius:50%;border:4px solid #fff;box-shadow:0 3px 0 rgba(59,42,90,.18);flex:0 0 auto;background:var(--c);display:flex;align-items:center;justify-content:center;font-size:24px}
-.sw.sel{outline:4px solid var(--ink);outline-offset:1px}
-.sep{width:2px;height:36px;background:rgba(59,42,90,.15);flex:0 0 auto}
-.size i{display:block;border-radius:50%;background:var(--ink)}
-
-/* OVERLAYS */
-#fx{position:fixed;inset:0;pointer-events:none;z-index:50}
-#cheer{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%) scale(0);z-index:60;pointer-events:none;font-size:clamp(38px,11vw,72px);font-weight:900;color:#fff;white-space:nowrap;
-  text-shadow:0 4px 0 #ff5fa2,0 -2px 0 #ff5fa2,3px 0 0 #ff5fa2,-3px 0 0 #ff5fa2,0 8px 18px rgba(0,0,0,.2)}
-#cheer.show{animation:cheer 1.3s ease forwards}
-@keyframes cheer{0%{transform:translate(-50%,-50%) scale(0) rotate(-10deg)}20%{transform:translate(-50%,-50%) scale(1.15) rotate(3deg)}35%{transform:translate(-50%,-50%) scale(1) rotate(0)}80%{opacity:1}100%{transform:translate(-50%,-60%) scale(1);opacity:0}}
-#modal{position:fixed;inset:0;z-index:70;background:rgba(59,42,90,.45);display:none;align-items:center;justify-content:center;padding:20px}
-#modal.show{display:flex}
-.mbox{background:#fff;border-radius:32px;padding:26px 22px;width:min(90vw,420px);text-align:center;box-shadow:0 10px 0 rgba(59,42,90,.2);animation:inpop .35s}
-.mbox h3{margin:0;font-size:34px;font-weight:900}
-.stars{font-size:58px;margin:10px 0 4px;letter-spacing:4px}
-.stars .off{filter:grayscale(1);opacity:.3}
-.mbox p{font-size:20px;font-weight:800;margin:6px 0 18px;opacity:.75}
-.mrow{display:flex;gap:12px;justify-content:center}
-.mbtn{border:none;border-radius:20px;padding:14px 20px;font-size:21px;font-weight:900;color:#fff;background:var(--c);box-shadow:var(--shadow)}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#d0eeff">
+  <meta name="description" content="Lale ve Ela'nın ailelerine ulaşmak için çıktıkları üç boyutlu, güvenli ve eğlenceli macera.">
+  <title>Lale & Ela | Büyülü 3D Dünya</title>
+  <link rel="icon" href="../img/icon-192.png">
+  <link rel="stylesheet" href="./style.css?v=1">
+  <!-- Sabit sürüm Three.js; mevcut depoda vendor dosyası bulunmasını gerektirmez. -->
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js"}}</script>
 </head>
 <body>
+  <div id="game" role="application" aria-label="Lale ve Ela üç boyutlu macera oyunu"></div>
+  <div id="loading" class="full-screen"><div class="loading-card"><div class="load-emoji">🌈</div><h1>Büyülü Dünya Açılıyor...</h1><p>Sevgi dolu macera birazdan başlayacak.</p><div class="loading-track"><div></div></div></div></div>
 
-<!-- SPLASH -->
-<div id="splash" onclick="hideSplash()">
-  <div class="sp-photo"><img src="img/lale-ela.jpg" alt="Lale ve Ela"></div>
-  <div class="sp-names" id="spNames"></div>
-  <div class="sp-sub">Oyun Bahçesi'ne hoş geldiniz! 🌈</div>
-  <div class="sp-tap">👆 Başlamak için dokun</div>
-</div>
-
-<!-- CHOOSER -->
-<section class="screen" id="scr-home">
-  <div class="home-top"><button class="icon-btn" id="muteBtn" onclick="toggleMute()">🔊</button></div>
-  <div class="title"><h1>Kim oynuyor?</h1></div>
-  <div class="kids">
-    <button class="kid" style="--c:var(--purple)" onclick="go('lale')"><div class="kimg"><img src="img/lale.jpg" alt="Lale"></div><b>LALE</b><span class="age">8 yaş</span></button>
-    <button class="kid" style="--c:var(--pink)" onclick="go('ela')"><div class="kimg"><img src="img/ela.jpg" alt="Ela"></div><b>ELA</b><span class="age">4 yaş</span></button>
+  <div id="chooser" class="full-screen hidden">
+    <div class="choose-wrap">
+      <div class="eyebrow">✨ BİR AİLE MACERASI ✨</div>
+      <h1>Lale & Ela <span>🌈</span></h1>
+      <p class="hero-sub">Beş büyülü bölgeyi keşfet, sevgi ışıklarını topla ve <b>Nicole ile Oğuzhan'a ulaş!</b></p>
+      <div class="choose-grid">
+        <button id="choose-lale" class="kid-card purple" aria-label="Lale, 8 yaş, macerayı başlat">
+          <div class="photo"><img src="../img/lale.jpg" alt="Lale" onerror="this.style.display='none'"><span>👧🏻</span></div><b>LALE</b><em>8 YAŞ • KAŞİF</em><small>Bulmacalar, sayılar ve keşif</small><strong>MACERAYA BAŞLA →</strong>
+        </button>
+        <button id="choose-ela" class="kid-card pink" aria-label="Ela, 4 yaş, macerayı başlat">
+          <div class="photo"><img src="../img/ela.jpg" alt="Ela" onerror="this.style.display='none'"><span>👧🏼</span></div><b>ELA</b><em>4 YAŞ • MİNİK KAŞİF</em><small>Renkler, yıldızlar ve kolay görevler</small><strong>MACERAYA BAŞLA →</strong>
+        </button>
+      </div>
+      <a class="back-home" href="../">← Oyun Bahçesine Dön</a>
+    </div>
   </div>
-  <button class="sib-btn" id="sibBtn" style="display:none" onclick="Adv.siblings()">💖 Ailemizin İki Yıldızı</button>
-</section>
 
-<!-- LALE -->
-<section class="screen kidpage" id="scr-lale" style="--c:var(--purple)">
-  <div class="topbar" style="width:100%"><button class="icon-btn" onclick="back()">⬅️</button><div></div><div style="width:58px"></div></div>
-  <div class="kidhead"><div class="kh-row"><div class="avatar"><img src="img/lale.jpg" alt="Lale"></div><div class="avatar3d" data-kid="lale"><img class="av-fb" src="assets/characters/lale.png" alt="" style="height:88%"><span class="av-tip">👆 Dokun, çevir!</span></div></div><div class="hello"><small>Merhaba</small>LALE! 👋</div></div>
-  <div class="menu">
-    <button class="big adv-card" id="advCard-lale" onclick="go('adv')"><span class="ac-art"><span class="h">💖</span><span class="c">🏰</span><span class="s" style="left:46px;top:0">✨</span><span class="s" style="left:76px;top:20px;animation-delay:-.6s">⭐</span><span class="s" style="left:30px;top:56px;animation-delay:-1.2s">✨</span></span><span class="ac-txt"><b>Sevgi Yolculuğu</b><span>Anne ve Babaya Ulaş!</span><i>✨ 0/5 Sevgi Işığı</i></span></button>
-    <button class="big kart-card" onclick="go('kart')"><span class="emo">🏎️</span><span class="ac-txt"><b>Kart Yarışı</b><span>Trabzon · İskoçya pistleri</span><i>👨 Baba Oğuzhan da yarışta!</i></span></button>
-    <button class="big" style="--c:var(--purple)" onclick="startMemory(10)"><span class="emo">🦁</span><span class="lbl">Hafıza Kartları</span><small>20 kart</small></button>
-    <button class="big" style="--c:var(--blue)" onclick="startMath('add')"><span class="emo">➕</span><span class="lbl">Toplama · Çıkarma</span><small>50'ye kadar</small></button>
-    <button class="big" style="--c:var(--orange)" onclick="startMath('mul')"><span class="emo">✖️</span><span class="lbl">Çarpım Tablosu</span><small>2'den 9'a</small></button>
-    <button class="big" style="--c:var(--green)" onclick="go('draw')"><span class="emo">🎨</span><span class="lbl">Resim Yap</span><small>Renkler ve damgalar</small></button>
+  <div id="hud" class="hidden">
+    <div class="hud-top">
+      <div class="hud-brand"><span>🌈</span><div><b id="hud-name">LALE</b><small>BÜYÜLÜ MACERA</small></div></div>
+      <div class="score-pill"><span>💛</span><b id="light-count">0</b><span class="score-total">/ 5</span></div>
+      <button id="btn-menu" class="circle-btn" aria-label="Oyunu duraklat">☰</button>
+    </div>
+    <div id="quest" class="quest-panel" aria-live="polite">
+      <div class="quest-head"><span id="zone-emoji">🏔️</span><div><small id="zone-count">BÖLÜM 1 / 5</small><b id="zone-name">Trabzon'un Yaylaları</b></div></div>
+      <div class="quest-progress"><div id="progress-bar"></div></div>
+      <p id="quest-text">Yıldızları bul!</p>
+      <div class="quest-meta"><span id="quest-found">0 / 3</span><span id="quest-range">✨ Yol gösteriliyor</span></div>
+    </div>
+    <div id="hint" class="hint" aria-live="polite">🌸 Çiçekleri topla, maceran başlasın!</div>
+    <button id="btn-guide" class="guide-btn">🧭 Yolu Göster</button>
+    <div id="interact-wrap" class="hidden"><button id="btn-interact" class="interact-btn">✨ Konuş / Topla</button></div>
+    <div class="map" id="map-wrap"><canvas id="minimap" width="180" height="180" aria-label="Bölge haritası"></canvas><span>HARİTA</span></div>
+    <div id="touch" class="touch-controls">
+      <div id="stick" class="joystick" aria-label="Hareket kontrolü"><div id="stick-knob"></div></div>
+      <div class="touch-actions"><button id="btn-jump" aria-label="Zıpla">⬆️<small>ZIPLA</small></button><button id="btn-action" aria-label="Etkileşim">💖<small>YAP</small></button></div>
+    </div>
+    <div class="desktop-help">WASD / Ok tuşları: Yürü &nbsp; · &nbsp; Fareyi sürükle: Kamera &nbsp; · &nbsp; E: Etkileşim &nbsp; · &nbsp; Boşluk: Zıpla</div>
   </div>
-</section>
 
-<!-- ELA -->
-<section class="screen kidpage" id="scr-ela" style="--c:var(--pink)">
-  <div class="topbar" style="width:100%"><button class="icon-btn" onclick="back()">⬅️</button><div></div><div style="width:58px"></div></div>
-  <div class="kidhead"><div class="kh-row"><div class="avatar"><img src="img/ela.jpg" alt="Ela"></div><div class="avatar3d" data-kid="ela"><img class="av-fb" src="assets/characters/ela.png" alt="" style="height:88%"><span class="av-tip">👆 Dokun, çevir!</span></div></div><div class="hello"><small>Merhaba</small>ELA! 👋</div></div>
-  <div class="menu">
-    <button class="big adv-card" id="advCard-ela" onclick="go('adv')"><span class="ac-art"><span class="h">💖</span><span class="c">🏰</span><span class="s" style="left:46px;top:0">✨</span><span class="s" style="left:76px;top:20px;animation-delay:-.6s">⭐</span><span class="s" style="left:30px;top:56px;animation-delay:-1.2s">✨</span></span><span class="ac-txt"><b>Sevgi Yolculuğu</b><span>Anne ve Babaya Ulaş!</span><i>✨ 0/5 Sevgi Işığı</i></span></button>
-    <button class="big kart-card" onclick="go('kart')"><span class="emo">🏎️</span><span class="ac-txt"><b>Kart Yarışı</b><span>Trabzon · İskoçya pistleri</span><i>👨 Baba Oğuzhan da yarışta!</i></span></button>
-    <button class="big" style="--c:var(--pink)" onclick="go('balloon')"><span class="emo">🎈</span><span class="lbl">Balon Patlat</span><small>Dokun, patlat!</small></button>
-    <button class="big" style="--c:var(--purple)" onclick="startMemory(3)"><span class="emo">🐣</span><span class="lbl">Hafıza Kartları</span><small>6 kart</small></button>
-    <button class="big" style="--c:var(--blue)" onclick="startMath('count')"><span class="emo">🍎</span><span class="lbl">Saymayı Öğren</span><small>1'den 10'a</small></button>
-    <button class="big" style="--c:var(--green)" onclick="go('draw')"><span class="emo">🎨</span><span class="lbl">Resim Yap</span><small>Renkler ve damgalar</small></button>
+  <div id="dialog" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+    <div class="dialog-card"><div id="dialog-emoji" class="dialog-emoji">💌</div><span id="dialog-kicker" class="eyebrow">BİR MESAJIN VAR</span><h2 id="dialog-title">Merhaba!</h2><p id="dialog-text">Hazır mısın?</p><div id="dialog-photos" class="family-photos hidden"></div><div id="dialog-answers" class="answers"></div><button id="dialog-close" class="primary-btn">DEVAM ET ✨</button></div>
   </div>
-</section>
-
-<!-- BALLOON -->
-<section class="screen" id="scr-balloon">
-  <div class="topbar"><button class="icon-btn" onclick="back()">⬅️</button><h2>Balon Patlat</h2><div class="pill">🎈 <span id="balScore">0</span></div></div>
-  <div id="balloonArea"><div class="hint" id="balHint">Balonlara dokun! 👆</div></div>
-</section>
-
-
-<!-- MEMORY PLAY -->
-<section class="screen" id="scr-memory-play">
-  <div class="topbar"><button class="icon-btn" onclick="back()">⬅️</button><div class="pill">👆 <span id="memMoves">0</span></div><div class="pill">⭐ <span id="memPairs">0/0</span></div></div>
-  <div id="memGrid"></div>
-</section>
-
-
-<!-- MATH PLAY -->
-<section class="screen" id="scr-math-play">
-  <div class="topbar"><button class="icon-btn" onclick="back()">⬅️</button><div class="dots" id="mathDots"></div><div class="pill">⭐ <span id="mathScore">0</span></div></div>
-  <div id="mathBody">
-    <div class="qbox" id="qbox"></div>
-    <div class="opts" id="opts"></div>
-  </div>
-</section>
-
-<!-- DRAW -->
-<section class="screen" id="scr-draw">
-  <div class="topbar"><button class="icon-btn" onclick="back()">⬅️</button><h2>Resim Yap</h2><button class="icon-btn" onclick="clearDraw()">🗑️</button></div>
-  <div id="drawWrap"><canvas id="drawCanvas"></canvas></div>
-  <div class="tools" id="tools"></div>
-</section>
-
-<!-- KART YARIŞI -->
-<section class="screen" id="scr-kart"><div id="kartRoot"></div></section>
-<!-- SEVGİ YOLCULUĞU -->
-<section class="screen" id="scr-adv"><div id="advRoot"></div></section>
-
-<canvas id="fx"></canvas>
-<div id="cheer"></div>
-<div id="modal"><div class="mbox"><h3 id="mTitle"></h3><div class="stars" id="mStars"></div><p id="mText"></p>
-  <div class="mrow"><button class="mbtn" style="--c:var(--purple)" onclick="closeModal();back()">⬅️ Geri</button><button class="mbtn" style="--c:var(--green)" id="mAgain">🔁 Tekrar</button></div></div></div>
-
-<script src="js/family-config.js"></script>
-<script src="js/adventure-progress.js"></script>
-<script src="js/adventure-audio.js"></script>
-<script src="js/adventure.js"></script>
-<script src="js/adventure-lale.js"></script>
-<script src="js/adventure-ela.js"></script>
-<script>
-"use strict";
-const $=s=>document.querySelector(s);
-const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
-const pick=a=>a[Math.floor(Math.random()*a.length)];
-const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
-const COLORS=['#ff5d8f','#ff9547','#ffc93c','#3fcf86','#4fb3ff','#9b6bff','#ff6fd8','#2fd1c5'];
-const CHEERS=['Harika! 🎉','Süpersin! ⭐','Aferin! 👏','Bravo! 🌟','Muhteşem! 🦄','Çok iyi! 💖'];
-
-/* ---------- storage ---------- */
-function load(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}}
-function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
-
-/* ---------- sound ---------- */
-let actx=null,muted=load('muted',false);
-function ac(){if(!actx){try{actx=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(actx&&actx.state==='suspended')actx.resume();return actx}
-function tone(f,d,type,vol,slide,delay){if(muted)return;const a=ac();if(!a)return;const t=a.currentTime+(delay||0);const o=a.createOscillator(),g=a.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(slide)o.frequency.exponentialRampToValueAtTime(slide,t+d);g.gain.setValueAtTime(vol||.2,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d+.02)}
-const sfx={
-  pop:()=>{tone(rnd(500,800),.13,'triangle',.3,120)},
-  star:()=>{[988,1319,1568].forEach((f,i)=>tone(f,.18,'sine',.18,0,i*.07))},
-  flip:()=>tone(620,.07,'square',.05),
-  ding:()=>{tone(784,.14,'sine',.22);tone(1175,.22,'sine',.22,0,.1)},
-  buzz:()=>tone(200,.22,'sawtooth',.07,140),
-  win:()=>{[523,659,784,1047,784,1047].forEach((f,i)=>tone(f,.22,'triangle',.2,0,i*.12))},
-  click:()=>tone(900,.04,'sine',.08)
-};
-function toggleMute(){muted=!muted;save('muted',muted);$('#muteBtn').textContent=muted?'🔇':'🔊';if(!muted)sfx.ding()}
-$('#muteBtn').textContent=muted?'🔇':'🔊';
-document.addEventListener('pointerdown',()=>ac(),{once:true});
-
-/* ---------- effects ---------- */
-const fx=$('#fx'),fctx=fx.getContext('2d');let parts=[],fxRun=false;
-function sizeFx(){const d=window.devicePixelRatio||1;fx.width=innerWidth*d;fx.height=innerHeight*d;fctx.setTransform(d,0,0,d,0,0)}
-sizeFx();addEventListener('resize',sizeFx);
-function burst(x,y,color,n){for(let i=0;i<(n||14);i++){const a=Math.random()*Math.PI*2,s=120+Math.random()*260;parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,g:300,life:.7+Math.random()*.3,t:0,c:color||pick(COLORS),r:4+Math.random()*5,sq:false})}runFx()}
-function confetti(){for(let i=0;i<120;i++){parts.push({x:Math.random()*innerWidth,y:-20-Math.random()*innerHeight*.5,vx:(Math.random()-.5)*120,vy:100+Math.random()*200,g:120,life:3+Math.random(),t:0,c:pick(COLORS),r:5+Math.random()*5,sq:true,rot:Math.random()*6,vr:(Math.random()-.5)*10})}runFx()}
-let fxLast=0;
-function runFx(){if(fxRun)return;fxRun=true;fxLast=performance.now();requestAnimationFrame(fxLoop)}
-function fxLoop(t){const dt=Math.min(.05,(t-fxLast)/1000);fxLast=t;fctx.clearRect(0,0,innerWidth,innerHeight);
-  for(const p of parts){p.t+=dt;p.vy+=p.g*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;const al=Math.max(0,1-p.t/p.life);fctx.globalAlpha=al;fctx.fillStyle=p.c;
-    if(p.sq){p.rot+=p.vr*dt;fctx.save();fctx.translate(p.x,p.y);fctx.rotate(p.rot);fctx.fillRect(-p.r,-p.r/2,p.r*2,p.r);fctx.restore()}
-    else{fctx.beginPath();fctx.arc(p.x,p.y,p.r,0,7);fctx.fill()}}
-  fctx.globalAlpha=1;parts=parts.filter(p=>p.t<p.life);
-  if(parts.length)requestAnimationFrame(fxLoop);else{fxRun=false;fctx.clearRect(0,0,innerWidth,innerHeight)}}
-function cheer(txt){const c=$('#cheer');c.textContent=txt||pick(cheers());c.classList.remove('show');void c.offsetWidth;c.classList.add('show')}
-function showResult(title,stars,text,again){
-  $('#mTitle').textContent=title;
-  $('#mStars').innerHTML=[0,1,2].map(i=>`<span class="${i<stars?'':'off'}">⭐</span>`).join('');
-  $('#mText').textContent=text;$('#mAgain').onclick=()=>{closeModal();again()};
-  $('#modal').classList.add('show');sfx.win();confetti()}
-function closeModal(){$('#modal').classList.remove('show')}
-
-/* ---------- router ---------- */
-function go(r){sfx.click();if(location.hash.slice(1)===r)render();else location.hash=r}
-function back(){sfx.click();closeModal();if(history.length>1&&location.hash)history.back();else{location.hash=''}}
-addEventListener('hashchange',render);
-let memPairsCount=0,mathMode=null,kid=null;
-const kidName=()=>kid==='lale'?'Lale':kid==='ela'?'Ela':'';
-function cheers(){const n=kidName();return n?[`Aferin ${n}! 👏`,`Harika ${n}! 🎉`,`Süpersin ${n}! ⭐`,`Bravo ${n}! 🌟`,'Muhteşem! 🦄','Çok iyi! 💖']:CHEERS}
-const congrats=()=>kidName()?`Tebrikler ${kidName()}! 🎉`:'Tebrikler! 🎉';
-function render(){
-  const r=location.hash.slice(1)||'home';
-  stopBalloons();closeModal();
-  const isAdv=r.startsWith('adv');
-  if(typeof Adv!=='undefined'&&!isAdv)Adv.leave();
-  if(r!=='kart'&&window.Kart)Kart.close();
-  if(r==='kart'&&!kid){location.replace('#');return}
-  if(isAdv&&!kid){location.replace('#');return}
-  if(r==='memory-play'&&!memPairsCount){location.replace('#');return}
-  if(r==='math-play'&&!mathMode){location.replace('#');return}
-  if(r==='lale'||r==='ela')kid=r;if(r==='home')kid=null;
-  const sid=isAdv?'adv':r;
-  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id==='scr-'+sid));
-  if(!$('#scr-'+sid)){$('#scr-home').classList.add('active');return}
-  if(isAdv){Adv.route(r);return}
-  if(r==='kart'){openKart();return}
-  if(typeof Adv!=='undefined'){Adv.updateCards();if(r==='home')Adv.checkSiblings()}
-  if(r==='lale'||r==='ela')mount3d(r);
-  if(r==='balloon')startBalloons();
-  if(r==='memory-play')buildMemory();
-  if(r==='math-play')beginMath();
-  if(r==='draw')setupDraw();
-}
-
-/* ---------- BALLOONS ---------- */
-const bal={run:false,raf:0,last:0,spawn:0,list:[],score:0,next:10};
-function startBalloons(){
-  const area=$('#balloonArea');area.querySelectorAll('.balloon,.cloud').forEach(e=>e.remove());
-  for(let i=0;i<3;i++){const c=document.createElement('div');c.className='cloud';c.textContent='☁️';c.style.top=(8+i*28)+'%';c.style.animationDuration=(28+i*9)+'s';c.style.animationDelay=(-i*10)+'s';area.appendChild(c)}
-  bal.list=[];bal.score=0;bal.next=10;$('#balScore').textContent=0;$('#balHint').style.display='';
-  bal.run=true;bal.last=performance.now();bal.spawn=0;bal.raf=requestAnimationFrame(balLoop)}
-function stopBalloons(){bal.run=false;cancelAnimationFrame(bal.raf)}
-function spawnBalloon(){
-  const area=$('#balloonArea'),W=area.clientWidth,H=area.clientHeight;
-  const base=Math.max(74,Math.min(W,H)*.2),size=base*(.85+Math.random()*.3);
-  const el=document.createElement('div');el.className='balloon';
-  const c=pick(COLORS);el.style.setProperty('--c',c);el.style.width=size+'px';el.style.height=size*1.18+'px';
-  const star=Math.random()<.12;el.innerHTML='<i></i>'+(star?'<span>⭐</span>':'');
-  const b={el,c,star,x:Math.random()*Math.max(1,W-size),y:H+20,vy:H/(5.5+Math.random()*3),ph:Math.random()*6,size,alive:true};
-  el.addEventListener('pointerdown',e=>{e.preventDefault();popBalloon(b)});
-  area.appendChild(el);bal.list.push(b)}
-function balLoop(t){if(!bal.run)return;const dt=Math.min(.05,(t-bal.last)/1000);bal.last=t;
-  bal.spawn-=dt;if(bal.spawn<=0){spawnBalloon();bal.spawn=.65+Math.random()*.6}
-  for(const b of bal.list){if(!b.alive)continue;b.y-=b.vy*dt;b.ph+=dt*1.8;b.el.style.transform=`translate(${b.x+Math.sin(b.ph)*14}px,${b.y}px) rotate(${Math.sin(b.ph)*5}deg)`;
-    if(b.y<-b.size*1.9){b.alive=false;b.el.remove()}}
-  bal.list=bal.list.filter(b=>b.alive);bal.raf=requestAnimationFrame(balLoop)}
-function popBalloon(b){if(!b.alive)return;b.alive=false;
-  const r=b.el.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,b.c,b.star?22:14);
-  b.el.remove();$('#balHint').style.display='none';
-  if(b.star){sfx.star();bal.score+=3}else{sfx.pop();bal.score+=1}
-  $('#balScore').textContent=bal.score;
-  if(bal.score>=bal.next){bal.next+=10;cheer();confetti()}}
-
-/* ---------- MEMORY ---------- */
-const ANIMALS=['🐶','🐱','🐰','🦊','🐼','🐨','🦁','🐸','🐵','🦄','🐧','🐢','🐙','🦋','🐞','🐳','🐯','🐮'];
-const mem={first:null,lock:false,moves:0,found:0};
-function startMemory(p){memPairsCount=p;go('memory-play')}
-function buildMemory(){
-  const pairs=memPairsCount,emo=shuffle(ANIMALS.slice()).slice(0,pairs);
-  const deck=shuffle(emo.concat(emo));
-  mem.first=null;mem.lock=false;mem.moves=0;mem.found=0;
-  $('#memMoves').textContent=0;$('#memPairs').textContent='0/'+pairs;
-  const g=$('#memGrid');g.innerHTML='';
-  deck.forEach(e=>{const c=document.createElement('div');c.className='card';c.dataset.e=e;
-    c.innerHTML=`<div class="in"><div class="face front"></div><div class="face back"><span>${e}</span></div></div>`;
-    c.addEventListener('click',()=>flip(c));g.appendChild(c)});
-  requestAnimationFrame(fitMemory)}
-function fitMemory(){
-  const g=$('#memGrid');if(!g.children.length)return;
-  const sec=$('#scr-memory-play'),n=g.children.length,W=sec.clientWidth-24,H=sec.clientHeight-sec.querySelector('.topbar').offsetHeight-30,gap=10,ratio=1.12;
-  let best={s:0,c:2};
-  for(let c=2;c<=8;c++){const r=Math.ceil(n/c);const w=Math.min((W-gap*(c-1))/c,((H-gap*(r-1))/r)/ratio);if(w>best.s)best={s:w,c}}
-  const s=Math.floor(Math.min(best.s,170));
-  g.style.gridTemplateColumns=`repeat(${best.c},${s}px)`;g.style.gridAutoRows=Math.floor(s*ratio)+'px';
-  g.style.setProperty('--fs',Math.floor(s*.58)+'px')}
-addEventListener('resize',()=>{if($('#scr-memory-play').classList.contains('active'))fitMemory()});
-function flip(c){
-  if(mem.lock||c.classList.contains('up')||c.classList.contains('done'))return;
-  sfx.flip();c.classList.add('up');
-  if(!mem.first){mem.first=c;return}
-  const a=mem.first;mem.first=null;mem.moves++;$('#memMoves').textContent=mem.moves;
-  if(a.dataset.e===c.dataset.e){
-    setTimeout(()=>{a.classList.add('done');c.classList.add('done');a.classList.remove('up');c.classList.remove('up');sfx.ding();
-      const r=c.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,null,12);
-      mem.found++;$('#memPairs').textContent=mem.found+'/'+memPairsCount;
-      if(mem.found===memPairsCount){const p=memPairsCount,st=mem.moves<=Math.ceil(p*1.5)?3:mem.moves<=Math.ceil(p*2.3)?2:1;
-        setTimeout(()=>showResult(congrats(),st,`Hepsini ${mem.moves} hamlede buldun!`,buildMemory),500)}
-    },350)}
-  else{mem.lock=true;setTimeout(()=>{a.classList.remove('up');c.classList.remove('up');mem.lock=false},900)}}
-
-/* ---------- MATH ---------- */
-const FRUITS=['🍎','🍓','🍌','🍊','🍇','🍒','🐥','🐟','⭐','🌸','🎈','🍪','🐞','🧁'];
-const OPT_COLORS=['var(--pink)','var(--blue)','var(--orange)','var(--purple)'];
-const mq={i:0,total:10,score:0,wrong:false,ans:0,busy:false};
-function startMath(m){mathMode=m;go('math-play')}
-function beginMath(){mq.i=0;mq.score=0;$('#mathScore').textContent=0;nextQ()}
-function makeOptions(ans,count,min,max,spread){
-  const s=new Set([ans]);let guard=0;
-  while(s.size<count&&guard++<200){const v=ans+rnd(-spread,spread);if(v>=min&&v<=max)s.add(v)}
-  for(let v=min;s.size<count;v++)s.add(v);
-  return shuffle([...s])}
-function nextQ(){
-  mq.wrong=false;mq.busy=false;
-  $('#mathDots').innerHTML=Array.from({length:mq.total},(_,k)=>`<i class="${k<mq.i?'ok':k===mq.i?'now':''}"></i>`).join('');
-  const q=$('#qbox'),o=$('#opts');let opts;
-  if(mathMode==='count'){
-    const n=rnd(1,10),e=pick(FRUITS);mq.ans=n;
-    q.innerHTML=`<div class="objs">${Array.from({length:n},(_,k)=>`<span style="animation-delay:${k*.06}s">${e}</span>`).join('')}</div><div class="qsub">Kaç tane var?</div>`;
-    opts=makeOptions(n,3,1,10,3);
-  }else if(mathMode==='add'){
-    let a,b,op;
-    if(Math.random()<.5){a=rnd(3,35);b=rnd(2,50-a);op='+';mq.ans=a+b}else{a=rnd(8,50);b=rnd(2,a-1);op='−';mq.ans=a-b}
-    q.innerHTML=`<div class="qtext">${a} ${op} ${b} = ?</div>`;
-    opts=makeOptions(mq.ans,4,0,100,6);
-  }else{
-    const a=rnd(2,9),b=rnd(1,10);mq.ans=a*b;
-    q.innerHTML=`<div class="qtext">${a} × ${b} = ?</div>`;
-    const s=new Set([mq.ans]);const cand=shuffle([a*(b+1),a*(b-1),(a+1)*b,(a-1)*b,mq.ans+1,mq.ans-1,mq.ans+2,mq.ans+10].filter(v=>v>0&&v!==mq.ans));
-    for(const v of cand){if(s.size<4)s.add(v)}opts=shuffle([...s]);
-  }
-  o.style.setProperty('--n',opts.length);
-  o.innerHTML=opts.map((v,k)=>`<button class="opt" style="--c:${OPT_COLORS[k%4]}" data-v="${v}">${v}</button>`).join('');
-  o.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>answer(b)))}
-function answer(b){
-  if(mq.busy||b.classList.contains('bad'))return;
-  if(+b.dataset.v===mq.ans){
-    mq.busy=true;b.classList.add('good');sfx.ding();
-    const r=b.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,null,16);
-    if(!mq.wrong){mq.score++;$('#mathScore').textContent=mq.score}
-    if(mq.i===4||mq.i===8)cheer();
-    setTimeout(()=>{mq.i++;if(mq.i>=mq.total){const st=mq.score>=9?3:mq.score>=6?2:1;
-      showResult(congrats(),st,`${mq.total} sorudan ${mq.score} tanesini ilk denemede bildin!`,beginMath)}else nextQ()},800)
-  }else{mq.wrong=true;b.classList.add('bad');sfx.buzz()}}
-
-/* ---------- DRAW ---------- */
-const dr={color:'#ff5d8f',size:12,tool:'pen',stamp:'⭐',drawing:false,lx:0,ly:0,ready:false};
-const DCOL=['#ff5d8f','#ff9547','#ffc93c','#3fcf86','#4fb3ff','#9b6bff','#8b5a3c','#3b2a5a'];
-const STAMPS=['⭐','❤️','🌸','🦋','🌈','☀️'];
-const cv=$('#drawCanvas'),cx=cv.getContext('2d');
-function buildTools(){
-  const t=$('#tools');let h='';
-  DCOL.forEach(c=>h+=`<button class="sw" data-t="pen" data-c="${c}" style="--c:${c}"></button>`);
-  h+=`<button class="sw" data-t="eraser" style="--c:#fff">🧽</button><span class="sep"></span>`;
-  [6,12,24].forEach(s=>h+=`<button class="sw size" data-s="${s}" style="--c:#fff"><i style="width:${s*.8+4}px;height:${s*.8+4}px"></i></button>`);
-  h+='<span class="sep"></span>';
-  STAMPS.forEach(s=>h+=`<button class="sw" data-t="stamp" data-st="${s}" style="--c:#fff">${s}</button>`);
-  t.innerHTML=h;
-  t.querySelectorAll('.sw').forEach(b=>b.addEventListener('click',()=>{sfx.click();
-    if(b.dataset.s){dr.size=+b.dataset.s}else{dr.tool=b.dataset.t;if(b.dataset.c)dr.color=b.dataset.c;if(b.dataset.st)dr.stamp=b.dataset.st}
-    markTools()}));
-  markTools()}
-function markTools(){$('#tools').querySelectorAll('.sw').forEach(b=>{let on=false;
-  if(b.dataset.s)on=+b.dataset.s===dr.size;
-  else if(b.dataset.t==='pen')on=dr.tool==='pen'&&b.dataset.c===dr.color;
-  else if(b.dataset.t==='eraser')on=dr.tool==='eraser';
-  else if(b.dataset.t==='stamp')on=dr.tool==='stamp'&&b.dataset.st===dr.stamp;
-  b.classList.toggle('sel',on)})}
-function sizeCanvas(){
-  const w=$('#drawWrap'),d=window.devicePixelRatio||1,W=w.clientWidth,H=w.clientHeight;if(!W||!H)return;
-  let old=null;if(cv.width&&cv.height){old=document.createElement('canvas');old.width=cv.width;old.height=cv.height;old.getContext('2d').drawImage(cv,0,0)}
-  cv.width=Math.round(W*d);cv.height=Math.round(H*d);cx.setTransform(1,0,0,1,0,0);cx.fillStyle='#fff';cx.fillRect(0,0,cv.width,cv.height);
-  if(old)cx.drawImage(old,0,0);cx.setTransform(d,0,0,d,0,0)}
-function setupDraw(){if(!dr.ready){buildTools();dr.ready=true}requestAnimationFrame(sizeCanvas)}
-addEventListener('resize',()=>{if($('#scr-draw').classList.contains('active'))sizeCanvas()});
-function pos(e){const r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]}
-cv.addEventListener('pointerdown',e=>{e.preventDefault();const[x,y]=pos(e);
-  if(dr.tool==='stamp'){const s=dr.size*3+24;cx.font=`${s}px sans-serif`;cx.textAlign='center';cx.textBaseline='middle';cx.fillText(dr.stamp,x,y);sfx.pop();return}
-  dr.drawing=true;dr.lx=x;dr.ly=y;try{cv.setPointerCapture(e.pointerId)}catch(_){}
-  cx.fillStyle=dr.tool==='eraser'?'#fff':dr.color;cx.beginPath();cx.arc(x,y,(dr.tool==='eraser'?dr.size*2:dr.size)/2,0,7);cx.fill()});
-cv.addEventListener('pointermove',e=>{if(!dr.drawing)return;const[x,y]=pos(e);
-  cx.strokeStyle=dr.tool==='eraser'?'#fff':dr.color;cx.lineWidth=dr.tool==='eraser'?dr.size*2:dr.size;cx.lineCap='round';cx.lineJoin='round';
-  cx.beginPath();cx.moveTo(dr.lx,dr.ly);cx.lineTo(x,y);cx.stroke();dr.lx=x;dr.ly=y});
-['pointerup','pointercancel','pointerleave'].forEach(ev=>cv.addEventListener(ev,()=>dr.drawing=false));
-function clearDraw(){sfx.pop();cx.save();cx.setTransform(1,0,0,1,0,0);cx.fillStyle='#fff';cx.fillRect(0,0,cv.width,cv.height);cx.restore()}
-
-/* ---------- SPLASH ---------- */
-(function(){
-  const n=$('#spNames');let h='',d=1.0;
-  [['L','--purple'],['A','--purple'],['L','--purple'],['E','--purple'],['&','amp'],['E','--pink'],['L','--pink'],['A','--pink']].forEach(([ch,c])=>{
-    if(c==='amp')h+=`<span class="amp" style="animation-delay:${d}s">♥</span>`;else h+=`<span style="--c:var(${c});animation-delay:${d}s">${ch}</span>`;d+=.13});
-  n.innerHTML=h;
-  const sp=$('#splash'),items=['🎈','⭐','💖','🌸','🦋','✨','🌈','💜'];
-  for(let i=0;i<16;i++){const f=document.createElement('div');f.className='floaty';f.textContent=pick(items);
-    f.style.left=(Math.random()*96)+'%';f.style.fontSize=(24+Math.random()*26)+'px';
-    f.style.animationDuration=(6+Math.random()*6)+'s';f.style.animationDelay=(-Math.random()*10)+'s';sp.appendChild(f)}
-  setTimeout(()=>{if(!sp.classList.contains('hide'))confetti()},1900);
-  window.__splashTimer=setTimeout(hideSplash,6000);
-})();
-function hideSplash(){const sp=$('#splash');if(sp.classList.contains('hide'))return;clearTimeout(window.__splashTimer);sp.classList.add('hide');ac();sfx.ding();setTimeout(()=>sp.style.display='none',650)}
-
-/* ---------- 3D karakter (kız sayfaları) ---------- */
-let char3dLoading=false;
-function mount3d(k){
-  const host=document.querySelector(`#scr-${k} .avatar3d`);if(!host)return;
-  const go3=()=>window.Char3D&&window.Char3D.mount(host,k);
-  if(window.Char3D)return go3();
-  addEventListener('char3d-ready',go3,{once:true});
-  if(char3dLoading)return;char3dLoading=true;
-  const sc=document.createElement('script');sc.type='module';sc.src='js/char3d.js';sc.onerror=()=>{};document.head.appendChild(sc);
-}
-function openKart(){
-  const host=document.getElementById('kartRoot');
-  const go4=()=>window.Kart.open(host,kid);
-  if(window.Kart)return go4();
-  host.innerHTML='<p style="text-align:center;margin-top:40vh;font-weight:900">🏎️ Yükleniyor...</p>';
-  addEventListener('kart-ready',go4,{once:true});
-  if(document.querySelector('script[src="js/kart.js"]'))return;
-  const sc=document.createElement('script');sc.type='module';sc.src='js/kart.js';document.head.appendChild(sc);
-}
-render();
-if('serviceWorker' in navigator&&location.protocol.startsWith('http')){navigator.serviceWorker.register('sw.js').catch(()=>{})}
-</script>
+  <div id="pause" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="pause-title"><div class="dialog-card"><span class="dialog-emoji">🌈</span><h2 id="pause-title">Bir Mola!</h2><p>Macera seni bekliyor.</p><button id="resume" class="primary-btn">▶ DEVAM ET</button><button id="sound" class="secondary-btn">🔊 Ses: Açık</button><button id="reset" class="secondary-btn">↻ Bu karakterin ilerlemesini sıfırla</button><a href="../" class="secondary-btn">⌂ Oyun Bahçesi</a></div></div>
+  <div id="toast" class="toast hidden" aria-live="polite"></div>
+  <div id="fatal" class="full-screen hidden"><div class="dialog-card"><h2>🧩 Oyun açılamadı</h2><p id="fatal-text">Tarayıcının WebGL desteğini kontrol et.</p><a href="../" class="primary-btn">Oyun Bahçesine Dön</a></div></div>
+  <script>
+    window.__lale3dStarted = false;
+    window.setTimeout(() => {
+      if (window.__lale3dStarted) return;
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('fatal').classList.remove('hidden');
+      document.getElementById('fatal-text').textContent = '3D kütüphanesi yüklenemedi. İnternet bağlantını kontrol edip sayfayı yenile.';
+    }, 12000);
+  </script>
+  <script type="module" src="./main.js?v=2"></script>
 </body>
 </html>
