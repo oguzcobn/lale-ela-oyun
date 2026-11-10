@@ -99,6 +99,7 @@ function decorations(){
   npc('ANNEANNE','💌',-22,-18,0x779bdb);
   npc('NICOLE & OĞUZHAN','💖',0,-45,0xff8eb2);
   import('../js/vendor/loaders/GLTFLoader.js').then(({GLTFLoader})=>new GLTFLoader().loadAsync('../assets/characters/baba.glb')).then(g=>{const o=g.scene;const b=new THREE.Box3().setFromObject(o),sz=b.getSize(new THREE.Vector3());o.scale.multiplyScalar(3.4/sz.y);o.updateMatrixWorld(true);const nb=new THREE.Box3().setFromObject(o),c=nb.getCenter(new THREE.Vector3());o.position.set(1.9-c.x,-nb.min.y,-45-c.z);scene.add(o);npcNodes[4].g.position.x=-1.6;}).catch(()=>{});
+  import('../js/vendor/loaders/GLTFLoader.js').then(({GLTFLoader})=>new GLTFLoader().loadAsync('../assets/characters/anne.glb')).then(g=>{const o=g.scene;const b=new THREE.Box3().setFromObject(o),sz=b.getSize(new THREE.Vector3());o.scale.multiplyScalar(3.3/sz.y);o.updateMatrixWorld(true);const nb=new THREE.Box3().setFromObject(o),c=nb.getCenter(new THREE.Vector3());o.position.set(-1.6-c.x,-nb.min.y,-45-c.z);scene.add(o);npcNodes[4].g.visible=false;}).catch(()=>{});
   const tokenOffsets=[[-7,0],[-2,-6],[6,2]];
   zoneData.forEach((z,i)=>{const items=[];tokenOffsets.forEach(([dx,dz],n)=>items.push(specialToken(i,z.x+dx,z.z+dz,n)));collectibleSets.push(items);});
   beacon=group(0,0,0);const arrow=cone(.44,1.15,material(0xffc45a,{emissive:0xb77012,emissiveIntensity:.45}),beacon,0,5,0);arrow.rotation.x=Math.PI;const orb=ball(.23,material(0xffffff,{emissive:0xffe4a3,emissiveIntensity:1}),beacon,0,5.8,0);beacon.visible=false;

@@ -11,7 +11,8 @@
 .kt-hello{font-weight:900;font-size:clamp(17px,4.6vw,22px)}
 .kt-sub{font-weight:900;font-size:15px;opacity:.6;margin-top:4px}
 .kt-drivers{display:flex;gap:10px;justify-content:center;width:min(96vw,560px)}
-.kt-drv{flex:1;border:none;background:#fff;border-radius:22px;padding:8px 6px 10px;box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;gap:4px;font-family:inherit;max-width:170px}
+.kt-drivers{flex-wrap:wrap}
+.kt-drv{flex:1 1 21%;min-width:76px;border:none;background:#fff;border-radius:22px;padding:8px 6px 10px;box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;gap:4px;font-family:inherit;max-width:170px}
 .kt-drv img{height:clamp(90px,24vw,130px);object-fit:contain;filter:drop-shadow(0 4px 4px rgba(0,0,0,.18))}
 .kt-drv b{font-size:clamp(13px,3.6vw,16px)}
 .kt-drv.sel{box-shadow:0 0 0 5px #ff9547,var(--shadow);transform:translateY(-3px)}

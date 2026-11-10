@@ -25,8 +25,8 @@ const glbCache = {};
 const loadGlb = k => (glbCache[k] = glbCache[k] || new GLTFLoader().loadAsync(`assets/characters/${k}.glb`).catch(() => null));
 const isMuted = () => (typeof muted !== 'undefined' && muted);
 const speak = (t) => { if (typeof AdvAudio !== 'undefined') AdvAudio.speak(t); };
-const NAMES = { lale: 'Lale', ela: 'Ela', baba: 'Baba Oğuzhan', bear: 'Ayıcık', sheep: 'Kuzucuk' };
-const FAMILY_DRIVERS = ['lale', 'ela', 'baba'];
+const NAMES = { lale: 'Lale', ela: 'Ela', anne: 'Anne Nicole', baba: 'Baba Oğuzhan', bear: 'Ayıcık', sheep: 'Kuzucuk' };
+const FAMILY_DRIVERS = ['lale', 'ela', 'anne', 'baba'];
 
 /* ---------------- arayüz ---------------- */
 function ui(host, kid) {
@@ -189,7 +189,7 @@ function animalDriver(kind) {
 async function driver(kind) {
   if (FAMILY_DRIVERS.includes(kind)) {
     const gl = await loadGlb(kind);
-    if (gl) { const m = gl.scene.clone(true); const b = new THREE.Box3().setFromObject(m), s = b.getSize(new THREE.Vector3()), c = b.getCenter(new THREE.Vector3()); const sc = (kind === 'baba' ? 3.1 : 2.6) / s.y; m.scale.setScalar(sc); m.position.set(-c.x * sc, -b.min.y * sc - 1.2, -c.z * sc); const g = new THREE.Group(); g.add(m); return g; }
+    if (gl) { const m = gl.scene.clone(true); const b = new THREE.Box3().setFromObject(m), s = b.getSize(new THREE.Vector3()), c = b.getCenter(new THREE.Vector3()); const sc = (kind === 'baba' ? 3.1 : kind === 'anne' ? 3.0 : 2.6) / s.y; m.scale.setScalar(sc); m.position.set(-c.x * sc, -b.min.y * sc - 1.2, -c.z * sc); const g = new THREE.Group(); g.add(m); return g; }
     return animalDriver('bear');
   }
   return animalDriver(kind);
@@ -231,7 +231,7 @@ async function race(wrap, kid, tid, drv) {
 
   // yarışçılar
   const rivals = [...FAMILY_DRIVERS.filter(d => d !== drv), 'bear', 'sheep'].slice(0, 3);
-  const colors = { lale: 0x9b6bff, ela: 0xff6fa8, baba: 0x8a1538, bear: 0xb07a4a, sheep: 0x5cb8f0 };
+  const colors = { lale: 0x9b6bff, ela: 0xff6fa8, anne: 0x7fa6e6, baba: 0x8a1538, bear: 0xb07a4a, sheep: 0x5cb8f0 };
   const racers = [];
   const make = async (kind, slot, isP) => {
     const g = kartMesh(colors[kind]); const d = await driver(kind); d.position.set(0, 1.4, -1); g.add(d);
