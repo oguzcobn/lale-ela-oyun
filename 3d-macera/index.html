@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#d0eeff">
+  <meta name="description" content="Lale ve Ela'nın ailelerine ulaşmak için çıktıkları üç boyutlu, güvenli ve eğlenceli macera.">
+  <title>Lale & Ela | Büyülü 3D Dünya</title>
+  <link rel="icon" href="../img/icon-192.png">
+  <link rel="stylesheet" href="./style.css?v=1">
+  <!-- Three.js sitenin kendi kopyasından yüklenir: internet olmadan da çalışır. -->
+  <script type="importmap">{"imports":{"three":"../js/vendor/three.module.min.js"}}</script>
+</head>
+<body>
+  <div id="game" role="application" aria-label="Lale ve Ela üç boyutlu macera oyunu"></div>
+  <div id="loading" class="full-screen"><div class="loading-card"><div class="load-emoji">🌈</div><h1>Büyülü Dünya Açılıyor...</h1><p>Sevgi dolu macera birazdan başlayacak.</p><div class="loading-track"><div></div></div></div></div>
+
+  <div id="chooser" class="full-screen hidden">
+    <div class="choose-wrap">
+      <div class="eyebrow">✨ BİR AİLE MACERASI ✨</div>
+      <h1>Lale & Ela <span>🌈</span></h1>
+      <p class="hero-sub">Beş büyülü bölgeyi keşfet, sevgi ışıklarını topla ve <b>Nicole ile Oğuzhan'a ulaş!</b></p>
+      <div class="choose-grid">
+        <button id="choose-lale" class="kid-card purple" aria-label="Lale, 8 yaş, macerayı başlat">
+          <div class="photo"><img src="../img/lale.jpg" alt="Lale" onerror="this.style.display='none'"><span>👧🏻</span></div><b>LALE</b><em>8 YAŞ • KAŞİF</em><small>Bulmacalar, sayılar ve keşif</small><strong>MACERAYA BAŞLA →</strong>
+        </button>
+        <button id="choose-ela" class="kid-card pink" aria-label="Ela, 4 yaş, macerayı başlat">
+          <div class="photo"><img src="../img/ela.jpg" alt="Ela" onerror="this.style.display='none'"><span>👧🏼</span></div><b>ELA</b><em>4 YAŞ • MİNİK KAŞİF</em><small>Renkler, yıldızlar ve kolay görevler</small><strong>MACERAYA BAŞLA →</strong>
+        </button>
+      </div>
+      <a class="back-home" id="back-home" href="../">← Oyun Bahçesine Dön</a>
+    </div>
+  </div>
+
+  <div id="hud" class="hidden">
+    <div class="hud-top">
+      <div class="hud-brand"><span>🌈</span><div><b id="hud-name">LALE</b><small>BÜYÜLÜ MACERA</small></div></div>
+      <div class="score-pill"><span>💛</span><b id="light-count">0</b><span class="score-total">/ 5</span></div>
+      <button id="btn-menu" class="circle-btn" aria-label="Oyunu duraklat">☰</button>
+    </div>
+    <div id="quest" class="quest-panel" aria-live="polite">
+      <div class="quest-head"><span id="zone-emoji">🏔️</span><div><small id="zone-count">BÖLÜM 1 / 5</small><b id="zone-name">Trabzon'un Yaylaları</b></div></div>
+      <div class="quest-progress"><div id="progress-bar"></div></div>
+      <p id="quest-text">Yıldızları bul!</p>
+      <div class="quest-meta"><span id="quest-found">0 / 3</span><span id="quest-range">✨ Yol gösteriliyor</span></div>
+    </div>
+    <div id="hint" class="hint" aria-live="polite">🌸 Çiçekleri topla, maceran başlasın!</div>
+    <button id="btn-guide" class="guide-btn">🧭 Yolu Göster</button>
+    <div id="interact-wrap" class="hidden"><button id="btn-interact" class="interact-btn">✨ Konuş / Topla</button></div>
+    <div class="map" id="map-wrap"><canvas id="minimap" width="180" height="180" aria-label="Bölge haritası"></canvas><span>HARİTA</span></div>
+    <div id="touch" class="touch-controls">
+      <div id="stick" class="joystick" aria-label="Hareket kontrolü"><div id="stick-knob"></div></div>
+      <div class="touch-actions"><button id="btn-jump" aria-label="Zıpla">⬆️<small>ZIPLA</small></button><button id="btn-action" aria-label="Etkileşim">💖<small>YAP</small></button></div>
+    </div>
+    <div class="desktop-help">WASD / Ok tuşları: Yürü &nbsp; · &nbsp; Fareyi sürükle: Kamera &nbsp; · &nbsp; E: Etkileşim &nbsp; · &nbsp; Boşluk: Zıpla</div>
+  </div>
+
+  <div id="dialog" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+    <div class="dialog-card"><div id="dialog-emoji" class="dialog-emoji">💌</div><span id="dialog-kicker" class="eyebrow">BİR MESAJIN VAR</span><h2 id="dialog-title">Merhaba!</h2><p id="dialog-text">Hazır mısın?</p><div id="dialog-photos" class="family-photos hidden"></div><div id="dialog-answers" class="answers"></div><button id="dialog-close" class="primary-btn">DEVAM ET ✨</button></div>
+  </div>
+  <div id="pause" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="pause-title"><div class="dialog-card"><span class="dialog-emoji">🌈</span><h2 id="pause-title">Bir Mola!</h2><p>Macera seni bekliyor.</p><button id="resume" class="primary-btn">▶ DEVAM ET</button><button id="sound" class="secondary-btn">🔊 Ses: Açık</button><button id="reset" class="secondary-btn">↻ Bu karakterin ilerlemesini sıfırla</button><a href="../" id="pause-home" class="secondary-btn">⌂ Oyun Bahçesi</a></div></div>
+  <div id="toast" class="toast hidden" aria-live="polite"></div>
+  <div id="fatal" class="full-screen hidden"><div class="dialog-card"><h2>🧩 Oyun açılamadı</h2><p id="fatal-text">Tarayıcının WebGL desteğini kontrol et.</p><a href="../" class="primary-btn">Oyun Bahçesine Dön</a></div></div>
+  <script>
+    window.__lale3dStarted = false;
+    window.setTimeout(() => {
+      if (window.__lale3dStarted) return;
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('fatal').classList.remove('hidden');
+      document.getElementById('fatal-text').textContent = '3D oyun açılamadı. Sayfayı yenilemeyi dene.';
+    }, 12000);
+  </script>
+  <script type="module" src="./main.js?v=3"></script>
+</body>
+</html>
