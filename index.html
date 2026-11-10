@@ -13,6 +13,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="css/adventure.css">
 <link rel="stylesheet" href="css/kart.css">
+<link rel="stylesheet" href="css/baba.css">
 <script type="importmap">{"imports":{"three":"./js/vendor/three.module.min.js"}}</script>
 <title>Lale & Ela Oyun Bahçesi</title>
 <style>
@@ -209,6 +210,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
     <button class="kid" style="--c:var(--purple)" onclick="go('lale')"><div class="kimg"><img src="img/lale.jpg" alt="Lale"></div><b>LALE</b><span class="age">8 yaş</span></button>
     <button class="kid" style="--c:var(--pink)" onclick="go('ela')"><div class="kimg"><img src="img/ela.jpg" alt="Ela"></div><b>ELA</b><span class="age">4 yaş</span></button>
   </div>
+  <button class="baba-btn" onclick="Baba.askOpen()">🔒 Baba</button>
   <button class="sib-btn" id="sibBtn" style="display:none" onclick="Adv.siblings()">💖 Ailemizin İki Yıldızı</button>
 </section>
 
@@ -272,6 +274,8 @@ button{font-family:inherit;color:inherit;cursor:pointer}
   <div class="tools" id="tools"></div>
 </section>
 
+<!-- BABA SAYFASI -->
+<section class="screen" id="scr-baba"><div id="babaRoot"></div></section>
 <!-- KART YARIŞI -->
 <section class="screen" id="scr-kart"><div id="kartRoot"></div></section>
 <!-- SEVGİ YOLCULUĞU -->
@@ -288,6 +292,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 <script src="js/adventure.js"></script>
 <script src="js/adventure-lale.js"></script>
 <script src="js/adventure-ela.js"></script>
+<script src="js/baba.js"></script>
 <script>
 "use strict";
 const $=s=>document.querySelector(s);
@@ -354,16 +359,20 @@ function render(){
   const isAdv=r.startsWith('adv');
   if(typeof Adv!=='undefined'&&!isAdv)Adv.leave();
   if(r!=='kart'&&window.Kart)Kart.close();
+  const isBaba=r.startsWith('baba');
+  if(typeof Baba!=='undefined'&&!isBaba)Baba.leave();
+  if(isBaba&&!Baba.unlocked){location.replace('#');setTimeout(()=>Baba.askOpen(),200);return}
   if(r==='kart'&&!kid){location.replace('#');return}
   if(isAdv&&!kid){location.replace('#');return}
   if(r==='memory-play'&&!memPairsCount){location.replace('#');return}
   if(r==='math-play'&&!mathMode){location.replace('#');return}
   if(r==='lale'||r==='ela')kid=r;if(r==='home')kid=null;
-  const sid=isAdv?'adv':r;
+  const sid=isAdv?'adv':isBaba?'baba':r;
   document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id==='scr-'+sid));
   if(!$('#scr-'+sid)){$('#scr-home').classList.add('active');return}
   if(isAdv){Adv.route(r);return}
   if(r==='kart'){openKart();return}
+  if(isBaba){Baba.route(r);return}
   if(typeof Adv!=='undefined'){Adv.updateCards();if(r==='home')Adv.checkSiblings()}
   if(r==='lale'||r==='ela')mount3d(r);
   if(r==='balloon')startBalloons();
