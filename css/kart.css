@@ -1,0 +1,51 @@
+/* ===== Lale & Ela Kart Yarışı ===== */
+.big.kart-card{grid-column:1/-1;flex-direction:row;justify-content:center;gap:14px;padding:12px 16px;background:linear-gradient(115deg,#ffe2c2,#d8f0ff 60%,#d6f5dc)}
+.big.kart-card::before{display:none}
+.kart-card .emo{font-size:clamp(44px,12vw,60px)}
+.kart-card .ac-txt b{color:#e4572e}
+#scr-kart{padding:0;overflow:hidden}
+#kartRoot,.kt-wrap{position:absolute;inset:0}
+.kt-menu{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;gap:10px;overflow-y:auto;padding:calc(10px + env(safe-area-inset-top)) 14px 20px;background:linear-gradient(180deg,#bfe7ff,#e8f7ff 50%,#c9efc9)}
+.kt-top{display:flex;align-items:center;width:100%;gap:10px}
+.kt-top h2{flex:1;text-align:center;margin:0;font-weight:900;font-size:clamp(22px,6vw,32px)}
+.kt-hello{font-weight:900;font-size:clamp(17px,4.6vw,22px)}
+.kt-sub{font-weight:900;font-size:15px;opacity:.6;margin-top:4px}
+.kt-drivers{display:flex;gap:10px;justify-content:center;width:min(96vw,560px)}
+.kt-drv{flex:1;border:none;background:#fff;border-radius:22px;padding:8px 6px 10px;box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;gap:4px;font-family:inherit;max-width:170px}
+.kt-drv img{height:clamp(90px,24vw,130px);object-fit:contain;filter:drop-shadow(0 4px 4px rgba(0,0,0,.18))}
+.kt-drv b{font-size:clamp(13px,3.6vw,16px)}
+.kt-drv.sel{box-shadow:0 0 0 5px #ff9547,var(--shadow);transform:translateY(-3px)}
+.kt-drv.sel img{animation:advBob 1.4s ease-in-out infinite}
+.kt-tracks{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;width:min(96vw,560px)}
+.kt-track{flex:1 1 220px;border:none;border-radius:24px;padding:16px 12px;color:#fff;box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;gap:4px;font-family:inherit}
+.kt-track .e{font-size:48px}.kt-track b{font-size:20px;text-shadow:0 2px 0 rgba(0,0,0,.2)}.kt-track small{font-weight:800;opacity:.9}
+.kt-trabzon{background:linear-gradient(150deg,#3c9fe0,#8a1538)}
+.kt-scotland{background:linear-gradient(150deg,#005eb8,#6aa86c)}
+.kt-help{font-weight:800;font-size:14px;opacity:.7;text-align:center;max-width:520px}
+.kt-game{position:absolute;inset:0;background:#000}
+.kt-canvas{position:absolute;inset:0}
+.kt-canvas canvas{width:100%;height:100%;display:block;touch-action:none}
+.kt-hud{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top)) 10px 0;pointer-events:none}
+.kt-hud>*{pointer-events:auto}
+.kt-hud .icon-btn{width:48px;height:48px;font-size:22px}
+.kt-pill{background:rgba(255,255,255,.9);border-radius:999px;padding:6px 12px;font-weight:900;font-size:clamp(14px,4vw,18px);box-shadow:var(--shadow)}
+.kt-mini{margin-left:auto;width:clamp(76px,22vw,110px);height:clamp(76px,22vw,110px)}
+.kt-count{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%) scale(0);font-size:clamp(60px,18vw,120px);font-weight:900;color:#fff;text-shadow:0 6px 0 #ff6fa8,0 0 30px rgba(0,0,0,.3);pointer-events:none;white-space:nowrap}
+.kt-count.show{animation:cheer 0.9s ease forwards}
+.kt-ctrl{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:flex-end;padding:0 12px calc(14px + env(safe-area-inset-bottom));pointer-events:none}
+.kt-ctrl button{pointer-events:auto;border:none;border-radius:24px;background:rgba(255,255,255,.85);box-shadow:var(--shadow);font-size:34px;color:var(--purple);touch-action:none}
+.kt-steer{display:flex;gap:12px}
+.kt-steer button{width:clamp(78px,22vw,100px);height:clamp(78px,22vw,100px)}
+.kt-act{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+.kt-boost{width:clamp(78px,22vw,96px);height:clamp(78px,22vw,96px);background:linear-gradient(160deg,#ffd23f,#ff7a00) !important}
+.kt-brake{width:60px;height:56px;font-size:26px !important}
+.kt-ctrl button.on{transform:scale(.92);filter:brightness(1.1)}
+.kt-end{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(59,42,90,.45);padding:16px}
+.kt-endbox{background:#fff;border-radius:28px;padding:18px 20px;width:min(92vw,400px);text-align:center;animation:spIn .5s both}
+.kt-medal{font-size:72px;line-height:1}
+.kt-endbox h3{margin:6px 0;font-size:clamp(20px,6vw,28px);font-weight:900}
+.kt-endbox p{font-weight:900;margin:4px 0 10px}
+.kt-res{list-style:none;padding:0;margin:0 0 14px;text-align:left;display:inline-block;font-weight:900;font-size:18px}
+.kt-res li{padding:3px 10px;border-radius:12px}.kt-res li.me{background:#fff3c4}
+.kt-err{color:#fff;text-align:center;margin-top:40vh;font-weight:900}
+.kt-end[hidden],.kt-game[hidden],.kt-menu[hidden]{display:none}

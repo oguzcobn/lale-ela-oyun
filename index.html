@@ -12,6 +12,7 @@
 <link rel="icon" href="img/icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="css/adventure.css">
+<link rel="stylesheet" href="css/kart.css">
 <script type="importmap">{"imports":{"three":"./js/vendor/three.module.min.js"}}</script>
 <title>Lale & Ela Oyun Bahçesi</title>
 <style>
@@ -216,6 +217,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
   <div class="kidhead"><div class="kh-row"><div class="avatar"><img src="img/lale.jpg" alt="Lale"></div><div class="avatar3d" data-kid="lale"><img class="av-fb" src="assets/characters/lale.png" alt="" style="height:88%"><span class="av-tip">👆 Dokun, çevir!</span></div></div><div class="hello"><small>Merhaba</small>LALE! 👋</div></div>
   <div class="menu">
     <button class="big adv-card" id="advCard-lale" onclick="go('adv')"><span class="ac-art"><span class="h">💖</span><span class="c">🏰</span><span class="s" style="left:46px;top:0">✨</span><span class="s" style="left:76px;top:20px;animation-delay:-.6s">⭐</span><span class="s" style="left:30px;top:56px;animation-delay:-1.2s">✨</span></span><span class="ac-txt"><b>Sevgi Yolculuğu</b><span>Anne ve Babaya Ulaş!</span><i>✨ 0/5 Sevgi Işığı</i></span></button>
+    <button class="big kart-card" onclick="go('kart')"><span class="emo">🏎️</span><span class="ac-txt"><b>Kart Yarışı</b><span>Trabzon · İskoçya pistleri</span><i>👨 Baba Oğuzhan da yarışta!</i></span></button>
     <button class="big" style="--c:var(--purple)" onclick="startMemory(10)"><span class="emo">🦁</span><span class="lbl">Hafıza Kartları</span><small>20 kart</small></button>
     <button class="big" style="--c:var(--blue)" onclick="startMath('add')"><span class="emo">➕</span><span class="lbl">Toplama · Çıkarma</span><small>50'ye kadar</small></button>
     <button class="big" style="--c:var(--orange)" onclick="startMath('mul')"><span class="emo">✖️</span><span class="lbl">Çarpım Tablosu</span><small>2'den 9'a</small></button>
@@ -229,6 +231,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
   <div class="kidhead"><div class="kh-row"><div class="avatar"><img src="img/ela.jpg" alt="Ela"></div><div class="avatar3d" data-kid="ela"><img class="av-fb" src="assets/characters/ela.png" alt="" style="height:88%"><span class="av-tip">👆 Dokun, çevir!</span></div></div><div class="hello"><small>Merhaba</small>ELA! 👋</div></div>
   <div class="menu">
     <button class="big adv-card" id="advCard-ela" onclick="go('adv')"><span class="ac-art"><span class="h">💖</span><span class="c">🏰</span><span class="s" style="left:46px;top:0">✨</span><span class="s" style="left:76px;top:20px;animation-delay:-.6s">⭐</span><span class="s" style="left:30px;top:56px;animation-delay:-1.2s">✨</span></span><span class="ac-txt"><b>Sevgi Yolculuğu</b><span>Anne ve Babaya Ulaş!</span><i>✨ 0/5 Sevgi Işığı</i></span></button>
+    <button class="big kart-card" onclick="go('kart')"><span class="emo">🏎️</span><span class="ac-txt"><b>Kart Yarışı</b><span>Trabzon · İskoçya pistleri</span><i>👨 Baba Oğuzhan da yarışta!</i></span></button>
     <button class="big" style="--c:var(--pink)" onclick="go('balloon')"><span class="emo">🎈</span><span class="lbl">Balon Patlat</span><small>Dokun, patlat!</small></button>
     <button class="big" style="--c:var(--purple)" onclick="startMemory(3)"><span class="emo">🐣</span><span class="lbl">Hafıza Kartları</span><small>6 kart</small></button>
     <button class="big" style="--c:var(--blue)" onclick="startMath('count')"><span class="emo">🍎</span><span class="lbl">Saymayı Öğren</span><small>1'den 10'a</small></button>
@@ -266,6 +269,8 @@ button{font-family:inherit;color:inherit;cursor:pointer}
   <div class="tools" id="tools"></div>
 </section>
 
+<!-- KART YARIŞI -->
+<section class="screen" id="scr-kart"><div id="kartRoot"></div></section>
 <!-- SEVGİ YOLCULUĞU -->
 <section class="screen" id="scr-adv"><div id="advRoot"></div></section>
 
@@ -345,6 +350,8 @@ function render(){
   stopBalloons();closeModal();
   const isAdv=r.startsWith('adv');
   if(typeof Adv!=='undefined'&&!isAdv)Adv.leave();
+  if(r!=='kart'&&window.Kart)Kart.close();
+  if(r==='kart'&&!kid){location.replace('#');return}
   if(isAdv&&!kid){location.replace('#');return}
   if(r==='memory-play'&&!memPairsCount){location.replace('#');return}
   if(r==='math-play'&&!mathMode){location.replace('#');return}
@@ -353,6 +360,7 @@ function render(){
   document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id==='scr-'+sid));
   if(!$('#scr-'+sid)){$('#scr-home').classList.add('active');return}
   if(isAdv){Adv.route(r);return}
+  if(r==='kart'){openKart();return}
   if(typeof Adv!=='undefined'){Adv.updateCards();if(r==='home')Adv.checkSiblings()}
   if(r==='lale'||r==='ela')mount3d(r);
   if(r==='balloon')startBalloons();
@@ -536,6 +544,15 @@ function mount3d(k){
   addEventListener('char3d-ready',go3,{once:true});
   if(char3dLoading)return;char3dLoading=true;
   const sc=document.createElement('script');sc.type='module';sc.src='js/char3d.js';sc.onerror=()=>{};document.head.appendChild(sc);
+}
+function openKart(){
+  const host=document.getElementById('kartRoot');
+  const go4=()=>window.Kart.open(host,kid);
+  if(window.Kart)return go4();
+  host.innerHTML='<p style="text-align:center;margin-top:40vh;font-weight:900">🏎️ Yükleniyor...</p>';
+  addEventListener('kart-ready',go4,{once:true});
+  if(document.querySelector('script[src="js/kart.js"]'))return;
+  const sc=document.createElement('script');sc.type='module';sc.src='js/kart.js';document.head.appendChild(sc);
 }
 render();
 if('serviceWorker' in navigator&&location.protocol.startsWith('http')){navigator.serviceWorker.register('sw.js').catch(()=>{})}
