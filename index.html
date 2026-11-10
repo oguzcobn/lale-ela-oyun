@@ -11,6 +11,8 @@
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="icon" href="img/icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="css/adventure.css">
+<script type="importmap">{"imports":{"three":"./js/vendor/three.module.min.js"}}</script>
 <title>Lale & Ela Oyun Bahçesi</title>
 <style>
 :root{
@@ -50,6 +52,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 @keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-8px) rotate(3deg)}}
 
 
+.kh-row{display:flex;align-items:center;justify-content:center;gap:6px}
 /* SPLASH */
 #splash{position:fixed;inset:0;z-index:90;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;
   background:radial-gradient(circle at 50% 35%,#fff4fa 0%,#ffd8ec 40%,#dccbff 75%,#c2e7ff 100%);overflow:hidden;transition:opacity .6s,transform .6s}
@@ -204,13 +207,15 @@ button{font-family:inherit;color:inherit;cursor:pointer}
     <button class="kid" style="--c:var(--purple)" onclick="go('lale')"><div class="kimg"><img src="img/lale.jpg" alt="Lale"></div><b>LALE</b><span class="age">8 yaş</span></button>
     <button class="kid" style="--c:var(--pink)" onclick="go('ela')"><div class="kimg"><img src="img/ela.jpg" alt="Ela"></div><b>ELA</b><span class="age">4 yaş</span></button>
   </div>
+  <button class="sib-btn" id="sibBtn" style="display:none" onclick="Adv.siblings()">💖 Ailemizin İki Yıldızı</button>
 </section>
 
 <!-- LALE -->
 <section class="screen kidpage" id="scr-lale" style="--c:var(--purple)">
   <div class="topbar" style="width:100%"><button class="icon-btn" onclick="back()">⬅️</button><div></div><div style="width:58px"></div></div>
-  <div class="kidhead"><div class="avatar"><img src="img/lale.jpg" alt="Lale"></div><div class="hello"><small>Merhaba</small>LALE! 👋</div></div>
+  <div class="kidhead"><div class="kh-row"><div class="avatar"><img src="img/lale.jpg" alt="Lale"></div><div class="avatar3d" data-kid="lale"><img class="av-fb" src="assets/characters/lale.png" alt="" style="height:88%"><span class="av-tip">👆 Dokun, çevir!</span></div></div><div class="hello"><small>Merhaba</small>LALE! 👋</div></div>
   <div class="menu">
+    <button class="big adv-card" id="advCard-lale" onclick="go('adv')"><span class="ac-art"><span class="h">💖</span><span class="c">🏰</span><span class="s" style="left:46px;top:0">✨</span><span class="s" style="left:76px;top:20px;animation-delay:-.6s">⭐</span><span class="s" style="left:30px;top:56px;animation-delay:-1.2s">✨</span></span><span class="ac-txt"><b>Sevgi Yolculuğu</b><span>Anne ve Babaya Ulaş!</span><i>✨ 0/5 Sevgi Işığı</i></span></button>
     <button class="big" style="--c:var(--purple)" onclick="startMemory(10)"><span class="emo">🦁</span><span class="lbl">Hafıza Kartları</span><small>20 kart</small></button>
     <button class="big" style="--c:var(--blue)" onclick="startMath('add')"><span class="emo">➕</span><span class="lbl">Toplama · Çıkarma</span><small>50'ye kadar</small></button>
     <button class="big" style="--c:var(--orange)" onclick="startMath('mul')"><span class="emo">✖️</span><span class="lbl">Çarpım Tablosu</span><small>2'den 9'a</small></button>
@@ -221,8 +226,9 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 <!-- ELA -->
 <section class="screen kidpage" id="scr-ela" style="--c:var(--pink)">
   <div class="topbar" style="width:100%"><button class="icon-btn" onclick="back()">⬅️</button><div></div><div style="width:58px"></div></div>
-  <div class="kidhead"><div class="avatar"><img src="img/ela.jpg" alt="Ela"></div><div class="hello"><small>Merhaba</small>ELA! 👋</div></div>
+  <div class="kidhead"><div class="kh-row"><div class="avatar"><img src="img/ela.jpg" alt="Ela"></div><div class="avatar3d" data-kid="ela"><img class="av-fb" src="assets/characters/ela.png" alt="" style="height:88%"><span class="av-tip">👆 Dokun, çevir!</span></div></div><div class="hello"><small>Merhaba</small>ELA! 👋</div></div>
   <div class="menu">
+    <button class="big adv-card" id="advCard-ela" onclick="go('adv')"><span class="ac-art"><span class="h">💖</span><span class="c">🏰</span><span class="s" style="left:46px;top:0">✨</span><span class="s" style="left:76px;top:20px;animation-delay:-.6s">⭐</span><span class="s" style="left:30px;top:56px;animation-delay:-1.2s">✨</span></span><span class="ac-txt"><b>Sevgi Yolculuğu</b><span>Anne ve Babaya Ulaş!</span><i>✨ 0/5 Sevgi Işığı</i></span></button>
     <button class="big" style="--c:var(--pink)" onclick="go('balloon')"><span class="emo">🎈</span><span class="lbl">Balon Patlat</span><small>Dokun, patlat!</small></button>
     <button class="big" style="--c:var(--purple)" onclick="startMemory(3)"><span class="emo">🐣</span><span class="lbl">Hafıza Kartları</span><small>6 kart</small></button>
     <button class="big" style="--c:var(--blue)" onclick="startMath('count')"><span class="emo">🍎</span><span class="lbl">Saymayı Öğren</span><small>1'den 10'a</small></button>
@@ -260,11 +266,20 @@ button{font-family:inherit;color:inherit;cursor:pointer}
   <div class="tools" id="tools"></div>
 </section>
 
+<!-- SEVGİ YOLCULUĞU -->
+<section class="screen" id="scr-adv"><div id="advRoot"></div></section>
+
 <canvas id="fx"></canvas>
 <div id="cheer"></div>
 <div id="modal"><div class="mbox"><h3 id="mTitle"></h3><div class="stars" id="mStars"></div><p id="mText"></p>
   <div class="mrow"><button class="mbtn" style="--c:var(--purple)" onclick="closeModal();back()">⬅️ Geri</button><button class="mbtn" style="--c:var(--green)" id="mAgain">🔁 Tekrar</button></div></div></div>
 
+<script src="js/family-config.js"></script>
+<script src="js/adventure-progress.js"></script>
+<script src="js/adventure-audio.js"></script>
+<script src="js/adventure.js"></script>
+<script src="js/adventure-lale.js"></script>
+<script src="js/adventure-ela.js"></script>
 <script>
 "use strict";
 const $=s=>document.querySelector(s);
@@ -328,11 +343,18 @@ const congrats=()=>kidName()?`Tebrikler ${kidName()}! 🎉`:'Tebrikler! 🎉';
 function render(){
   const r=location.hash.slice(1)||'home';
   stopBalloons();closeModal();
+  const isAdv=r.startsWith('adv');
+  if(typeof Adv!=='undefined'&&!isAdv)Adv.leave();
+  if(isAdv&&!kid){location.replace('#');return}
   if(r==='memory-play'&&!memPairsCount){location.replace('#');return}
   if(r==='math-play'&&!mathMode){location.replace('#');return}
   if(r==='lale'||r==='ela')kid=r;if(r==='home')kid=null;
-  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id==='scr-'+r));
-  if(!$('#scr-'+r)){$('#scr-home').classList.add('active');return}
+  const sid=isAdv?'adv':r;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id==='scr-'+sid));
+  if(!$('#scr-'+sid)){$('#scr-home').classList.add('active');return}
+  if(isAdv){Adv.route(r);return}
+  if(typeof Adv!=='undefined'){Adv.updateCards();if(r==='home')Adv.checkSiblings()}
+  if(r==='lale'||r==='ela')mount3d(r);
   if(r==='balloon')startBalloons();
   if(r==='memory-play')buildMemory();
   if(r==='math-play')beginMath();
@@ -505,6 +527,16 @@ function clearDraw(){sfx.pop();cx.save();cx.setTransform(1,0,0,1,0,0);cx.fillSty
 })();
 function hideSplash(){const sp=$('#splash');if(sp.classList.contains('hide'))return;clearTimeout(window.__splashTimer);sp.classList.add('hide');ac();sfx.ding();setTimeout(()=>sp.style.display='none',650)}
 
+/* ---------- 3D karakter (kız sayfaları) ---------- */
+let char3dLoading=false;
+function mount3d(k){
+  const host=document.querySelector(`#scr-${k} .avatar3d`);if(!host)return;
+  const go3=()=>window.Char3D&&window.Char3D.mount(host,k);
+  if(window.Char3D)return go3();
+  addEventListener('char3d-ready',go3,{once:true});
+  if(char3dLoading)return;char3dLoading=true;
+  const sc=document.createElement('script');sc.type='module';sc.src='js/char3d.js';sc.onerror=()=>{};document.head.appendChild(sc);
+}
 render();
 if('serviceWorker' in navigator&&location.protocol.startsWith('http')){navigator.serviceWorker.register('sw.js').catch(()=>{})}
 </script>
